@@ -31,28 +31,28 @@ compiling list.c...
 compiling timers.c...
 compiling heap_2.c...
 compiling queue.c...
-compiling retarget_io.c...
 compiling port.c...
+compiling retarget_io.c...
 compiling tasks.c...
 compiling stm32f4xx_hal_pwr_ex.c...
-compiling stm32f4xx_hal_pwr.c...
-assembling startup_stm32f407xx.s...
-compiling stm32f4xx_hal.c...
 compiling stm32f4xx_hal_gpio.c...
+assembling startup_stm32f407xx.s...
+compiling stm32f4xx_hal_pwr.c...
+compiling stm32f4xx_hal.c...
 compiling stm32f4xx_hal_cortex.c...
 compiling main.c...
 main.c(135): warning:  #550-D: variable "RCC_OscInitStruct"  was set but never used
   	RCC_OscInitTypeDef RCC_OscInitStruct;
-main.c(136): warning:  #550-D: variable "RCC_ClkInitStruct"  was set but never used
-  	RCC_ClkInitTypeDef RCC_ClkInitStruct;
 main.c: 2 warnings, 0 errors
+#550-D: variable "RCC_ClkInitStruct"  was set but never used
+  	RCC_ClkInitTypeDef RCC_ClkInitStruct;
 compiling stm32f4xx_hal_rcc.c...
 compiling system_stm32f4xx.c...
 compiling stm32f4xx_hal_rcc_ex.c...
 linking...
 Program Size: Code=11298 RO-data=486 RW-data=120 ZI-data=78888  
 FromELF: creating hex file...
-".\Objects\FreeRTOS-Queues-from_Interrupt.axf" - 0 Error(s), 2 Warning(s).
+".\Objects\FreeRTOS-Queues-from_Interrupt.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -91,15 +91,15 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: Keil::Device:Startup:2.6.0
+      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
+      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
       Source file:   MDK\Device\Source\ARM\STM32F40xxx_41xxx_OPT.s
       Include file:  Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
-      Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\arm\startup_stm32f407xx.s
-      Source file:   MDK\Device\Source\ARM\STM32F4xx_OTP.s
       Source file:   Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\system_stm32f4xx.c
 
    * Component: Keil::Device:STM32Cube HAL:RCC:1.6.0
-      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c
+      Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c
 
    * Component: Keil::Device:STM32Cube HAL:PWR:1.6.0
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c
@@ -116,13 +116,13 @@ Package Vendor: Keil
       Source file:   Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c
 
    * Component: Keil::Device:STM32Cube Framework:Classic:1.6.0
-      Source file:   MDK\Templates\Src\main.c
       Include file:  CMSIS\Driver\Config\RTE_Device.h
-      Include file:  MDK\Templates\Inc\stm32f4xx_it.h
-      Source file:   MDK\Templates\Src\stm32f4xx_it.c
       Include file:  MDK\Templates\Inc\stm32f4xx_hal_conf.h
       Source file:   MDK\Templates\Src\stm32f4xx_hal_msp.c
+      Source file:   MDK\Templates\Src\main.c
       Include file:  MDK\Templates\Inc\main.h
+      Include file:  MDK\Templates\Inc\stm32f4xx_it.h
+      Source file:   MDK\Templates\Src\stm32f4xx_it.c
 
    * Component: Keil.ARM Compiler::Compiler:I/O:STDOUT:ITM:1.2.0
       Source file:   Source\retarget_io.c
@@ -130,7 +130,7 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.0.1
 
    * Component: ::Device:STM32Cube Framework:1.0.0 (API)
-Build Time Elapsed:  00:00:09
+Build Time Elapsed:  00:00:10
 </pre>
 </body>
 </html>
