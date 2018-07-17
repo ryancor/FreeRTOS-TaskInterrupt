@@ -85,23 +85,23 @@ static void configInputPin(void)
 static void configInterrupt(void) 
 {
 	// enable clock to syscfg for pin selection.
-  __setbit(RCC->APB2ENR, 14);
-    
-  // connect PA.0 to EXTI.0
-  __clearbit(SYSCFG->EXTICR[0],0);
-  __clearbit(SYSCFG->EXTICR[0],1);
-  __clearbit(SYSCFG->EXTICR[0],2);
-  __clearbit(SYSCFG->EXTICR[0],3);
-    
-  // Enable Interrupt on EXTI0 line
-  __setbit(EXTI->IMR, 0);
-    
-  // trigger interrupt on rising edge
-  __setbit(EXTI->RTSR, 0);
+	__setbit(RCC->APB2ENR, 14);
+		
+	// connect PA.0 to EXTI.0
+	__clearbit(SYSCFG->EXTICR[0],0);
+	__clearbit(SYSCFG->EXTICR[0],1);
+	__clearbit(SYSCFG->EXTICR[0],2);
+	__clearbit(SYSCFG->EXTICR[0],3);
+		
+	// Enable Interrupt on EXTI0 line
+	__setbit(EXTI->IMR, 0);
+		
+	// trigger interrupt on rising edge
+	__setbit(EXTI->RTSR, 0);
 
-  NVIC_SetPriority(EXTI0_IRQn, 6U);
+	NVIC_SetPriority(EXTI0_IRQn, 6U);
 
-  // enable IRQn.6 to accept interrupt
+	// enable IRQn.6 to accept interrupt
 	NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
