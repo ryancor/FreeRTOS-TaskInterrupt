@@ -108,26 +108,26 @@ static void configInterrupt(void)
 void vRxTask(void *pvParams) 
 {
 	volatile unsigned int i = 0;
-  char * msgPtr;
-  int rxStatus = 0;
-  
-  for(;;) {
+	char * msgPtr;
+	int rxStatus = 0;
+
+	for(;;) {
 		rxStatus = xQueueReceive(qHandle, &msgPtr, 500);
 
-    if(0 == rxStatus) 
+		if(0 == rxStatus) 
 		{
-      printf ("Awaiting Message...\n");
-			
+			printf ("Awaiting Message...\n");
+
 			/*Configure GPIO pin Output Level */
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12 | GPIO_PIN_13, GPIO_PIN_SET);
-    } 
+		} 
 		else {
-      printf ("Rx Msg: %s\n", msgPtr);   
-			
+			printf ("Rx Msg: %s\n", msgPtr);   
+
 			/*Configure GPIO pin Output Level */
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14 | GPIO_PIN_15, GPIO_PIN_SET);
-    }
-  }
+		}
+	}
 }
 
 void SystemClock_Config(void) 
