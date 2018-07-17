@@ -41,15 +41,15 @@ int main(void)
 
 	// Initialize all configured peripherals
 	MX_GPIO_Init();
-    
+	
 	// btn
-  configInputPin();
-  
+	configInputPin();
+
 	// EXTI0 interrupt
 	configInterrupt();
 
 	qHandle = xQueueCreate(2, sizeof(char *));
-  
+
 	if(qHandle != NULL) 
 	{    
 		xTaskCreate(vRxTask, "RxTask", 200, NULL, 2, NULL);
