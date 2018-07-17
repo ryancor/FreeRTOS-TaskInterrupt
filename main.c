@@ -63,22 +63,22 @@ int main(void)
 
 static void configInputPin(void) 
 {
-  // enable clock to GPIOA
-  __setbit(RCC->AHB1ENR, 0);
-        
-  // configure PA.0 as digital input
-  __clearbit(GPIOA->MODER, 0);
-  __clearbit(GPIOA->MODER, 1);
-    
-  // GPIOs output type: Push-Pull
-  __clearbit(GPIOA->OTYPER, 0);
-    
-  // GPIO speed: Medium
-  __setbit(GPIOA->OSPEEDR, 0);
-  __clearbit(GPIOA->OSPEEDR, 1);
-    
-  // Initial Level: Logic High --> No Pull-up/down
-  __clearbit(GPIOA->PUPDR, 0);
+	// enable clock to GPIOA
+	__setbit(RCC->AHB1ENR, 0);
+				
+	// configure PA.0 as digital input
+	__clearbit(GPIOA->MODER, 0);
+	__clearbit(GPIOA->MODER, 1);
+		
+	// GPIOs output type: Push-Pull
+	__clearbit(GPIOA->OTYPER, 0);
+		
+	// GPIO speed: Medium
+	__setbit(GPIOA->OSPEEDR, 0);
+	__clearbit(GPIOA->OSPEEDR, 1);
+		
+	// Initial Level: Logic High --> No Pull-up/down
+	__clearbit(GPIOA->PUPDR, 0);
 	__setbit(GPIOA->PUPDR, 1);  
 }
 
