@@ -18,7 +18,7 @@ Section Cross References
     main.o(i.main) refers to main.o(i.SystemClock_Config) for SystemClock_Config
     main.o(i.main) refers to main.o(i.MX_GPIO_Init) for MX_GPIO_Init
     main.o(i.main) refers to main.o(i.configInputPin) for configInputPin
-    main.o(i.main) refers to main.o(i.configInterrupt) for configInterrupt
+    main.o(i.main) refers to main.o(i.configInterrupt0) for configInterrupt0
     main.o(i.main) refers to tasks.o(i.xTaskCreate) for xTaskCreate
     main.o(i.main) refers to queue.o(i.xQueueGenericCreate) for xQueueGenericCreate
     main.o(i.main) refers to tasks.o(i.vTaskStartScheduler) for vTaskStartScheduler
@@ -1157,8 +1157,8 @@ Image Symbol Table
     i.checkTask                              0x080017cc   Section        0  main.o(i.checkTask)
     i.configInputPin                         0x08001818   Section        0  main.o(i.configInputPin)
     configInputPin                           0x08001819   Thumb Code    86  main.o(i.configInputPin)
-    i.configInterrupt                        0x08001878   Section        0  main.o(i.configInterrupt)
-    configInterrupt                          0x08001879   Thumb Code   148  main.o(i.configInterrupt)
+    i.configInterrupt0                       0x08001878   Section        0  main.o(i.configInterrupt0)
+    configInterrupt0                         0x08001879   Thumb Code   148  main.o(i.configInterrupt0)
     i.fputc                                  0x08001920   Section        0  fputc.o(i.fputc)
     i.main                                   0x0800193c   Section        0  main.o(i.main)
     i.prvAddCurrentTaskToDelayedList         0x080019e4   Section        0  tasks.o(i.prvAddCurrentTaskToDelayedList)
@@ -1767,7 +1767,7 @@ Memory Map of the image
     0x080017ca   0x080017ca   0x00000002   PAD
     0x080017cc   0x080017cc   0x0000004c   Code   RO            8    i.checkTask         main.o
     0x08001818   0x08001818   0x00000060   Code   RO            9    i.configInputPin    main.o
-    0x08001878   0x08001878   0x000000a8   Code   RO           10    i.configInterrupt   main.o
+    0x08001878   0x08001878   0x000000a8   Code   RO           10    i.configInterrupt0  main.o
     0x08001920   0x08001920   0x0000001a   Code   RO         1762    i.fputc             c_w.l(fputc.o)
     0x0800193a   0x0800193a   0x00000002   PAD
     0x0800193c   0x0800193c   0x000000a8   Code   RO           11    i.main              main.o
@@ -1862,7 +1862,7 @@ Image component sizes
 
        304         46          0         24      76800       3891   heap_2.o
        148          0          0          0          0       5010   list.o
-      1084        260         36          8          0     669965   main.o
+      1084        260         36          8          0     669969   main.o
        954         92          0         12          0      11985   port.o
       1300         12          0          0          0      18485   queue.o
        388         30         23          0          0       6802   retarget_io.o
@@ -1875,7 +1875,7 @@ Image component sizes
       2622        338          0         60        200      21550   tasks.o
 
     ----------------------------------------------------------------------
-      7928        906        486        108      78536     779237   Object Totals
+      7928        906        486        108      78536     779241   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         14          0          3          0          0          0   (incl. Padding)
 
@@ -1968,8 +1968,8 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     11498       1102        486        120      78888     773613   Grand Totals
-     11498       1102        486        120      78888     773613   ELF Image Totals
+     11498       1102        486        120      78888     773617   Grand Totals
+     11498       1102        486        120      78888     773617   ELF Image Totals
      11498       1102        486        120          0          0   ROM Totals
 
 ==============================================================================
