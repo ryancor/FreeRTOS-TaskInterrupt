@@ -27,7 +27,7 @@ void checkTask(void *pvParams);
 static void configInputPin(void);
 
 // Configure pin select for interrupt
-static void configInterrupt(void);
+static void configInterrupt0(void);
 
 // Configure clocks for LEDs
 void SystemClock_Config(void);
@@ -48,7 +48,7 @@ int main(void)
 	configInputPin();
 
 	// EXTI0 interrupt
-	configInterrupt();
+	configInterrupt0();
 
 	// check if task queue is working
 	xTaskCreate(checkTask, "checkTask", 50, NULL, 1, NULL);
@@ -93,7 +93,7 @@ static void configInputPin(void)
 	__setbit(GPIOA->PUPDR, 1);  
 }
 
-static void configInterrupt(void) 
+static void configInterrupt0(void) 
 {
 	// enable clock to syscfg for pin selection.
 	__setbit(RCC->APB2ENR, 14);
@@ -163,6 +163,7 @@ void checkTask(void *pvParams)
 		for(i; i < 100000; i++);
 	}
 }
+
 
 /*
 	Setup Clock and GPIO ports
