@@ -20,6 +20,8 @@ const char *t1_Msg = "Message received From Button ISR...";
 
 // Task-1
 void vRxTask(void *pvParams);
+// Take-Check
+void checkTask(void *pvParams);
 
 // Configure pin for User-Btn
 static void configInputPin(void);
@@ -48,6 +50,9 @@ int main(void)
 	// EXTI0 interrupt
 	configInterrupt();
 
+	// check if task queue is working
+	xTaskCreate(checkTask, "checkTask", 50, NULL, 1, NULL);
+	
 	qHandle = xQueueCreate(2, sizeof(char *));
 
 	if(qHandle != NULL) 
@@ -60,6 +65,12 @@ int main(void)
 		while (1);
 	}
 }
+
+
+/*
+		Configuration for Input pins and
+		NVIC interrupt
+*/
 
 static void configInputPin(void) 
 {
@@ -105,13 +116,19 @@ static void configInterrupt(void)
 	NVIC_EnableIRQ(EXTI0_IRQn);
 }
 
+
+/*
+	Define RTOS queue'd tasks
+*/
+
 void vRxTask(void *pvParams) 
 {
 	volatile unsigned int i = 0;
 	char * msgPtr;
 	int rxStatus = 0;
 
-	for(;;) {
+	for(;;) 
+	{
 		rxStatus = xQueueReceive(qHandle, &msgPtr, 500);
 
 		if(0 == rxStatus) 
@@ -126,9 +143,30 @@ void vRxTask(void *pvParams)
 
 			/*Configure GPIO pin Output Level */
 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14 | GPIO_PIN_15, GPIO_PIN_SET);
+			
+			// delay before resetting tasks
+			for(i; i < 3999990; i++);
+			NVIC_SystemReset();
 		}
 	}
 }
+
+void checkTask(void *pvParams) 
+{
+	volatile unsigned int i = 0;
+	
+	for(;;) 
+	{
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+		for(i; i < 100000; i++);
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+		for(i; i < 100000; i++);
+	}
+}
+
+/*
+	Setup Clock and GPIO ports
+*/
 
 void SystemClock_Config(void) 
 {
@@ -178,6 +216,11 @@ static void MX_GPIO_Init(void)
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 }
 
+
+/*
+	Interrupt Handlers
+*/
+
 // Exit Handlr
 void EXTI0_IRQHandler(void) 
 {
@@ -194,6 +237,8 @@ void EXTI0_IRQHandler(void)
 	if(0 == txStatus) 
 	{   
 		printf("Sending failed Task-1!\n");
+		// reset MCU if task 1 failed
+		NVIC_SystemReset();
 	} 
 	else {
 		portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
