@@ -18,6 +18,7 @@
 .\objects\main.o: ..\FreeRTOS-Source\include\task.h
 .\objects\main.o: ..\FreeRTOS-Source\include\list.h
 .\objects\main.o: ..\FreeRTOS-Source\include\queue.h
+.\objects\main.o: ..\FreeRTOS-Source\include\semphr.h
 .\objects\main.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
 .\objects\main.o: .\RTE\Device\STM32F407VGTx\stm32f4xx_hal_conf.h
 .\objects\main.o: .\RTE\_FreeRTOS-Queues\RTE_Components.h
