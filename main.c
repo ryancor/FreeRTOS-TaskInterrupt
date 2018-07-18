@@ -4,6 +4,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 #include "stm32f4xx_hal.h"
 
 
@@ -14,20 +15,24 @@
 
 
 QueueHandle_t qHandle;
+SemaphoreHandle_t smphrHandle;
 
 // string literals
 const char *t1_Msg = "Message received From Button ISR...";
 
 // Task-1
 void vRxTask(void *pvParams);
-// Take-Check
+// Task-Check
 void checkTask(void *pvParams);
+// Semaphore Pre-Check
+void semTask(void *pvParams);
 
 // Configure pin for User-Btn
 static void configInputPin(void);
 
 // Configure pin select for interrupt
 static void configInterrupt0(void);
+static void configInterrupt1(void);
 
 // Configure clocks for LEDs
 void SystemClock_Config(void);
@@ -44,24 +49,34 @@ int main(void)
 	// Initialize all configured peripherals
 	MX_GPIO_Init();
 	
-	// btn
+	// configure user-btn
 	configInputPin();
 
 	// EXTI0 interrupt
 	configInterrupt0();
+	// EXTI1 interrupt
+	configInterrupt1();
 
 	// check if task queue is working
 	xTaskCreate(checkTask, "checkTask", 50, NULL, 1, NULL);
 	
+	// run semaphore task before Receiver Task 
+	smphrHandle = xSemaphoreCreateBinary();
+	
+	// start receiver task
 	qHandle = xQueueCreate(2, sizeof(char *));
 
-	if(qHandle != NULL) 
-	{    
+	if(qHandle != NULL && smphrHandle != NULL) 
+	{   
+		// user-btn clicks, green light turns off from checkTask to continue
+		xTaskCreate(semTask, "Semaphore-Task", 200, NULL, 1, NULL);
+		// waiting for btn click again, all four lights come on
 		xTaskCreate(vRxTask, "RxTask", 200, NULL, 2, NULL);
+		
 		vTaskStartScheduler();      
 	} 
 	else {    
-		printf ("Failed to create Queue! :-(\n");
+		printf("Failed to create Queue! :-(\n");
 		while (1);
 	}
 }
@@ -99,10 +114,10 @@ static void configInterrupt0(void)
 	__setbit(RCC->APB2ENR, 14);
 		
 	// connect PA.0 to EXTI.0
-	__clearbit(SYSCFG->EXTICR[0],0);
-	__clearbit(SYSCFG->EXTICR[0],1);
-	__clearbit(SYSCFG->EXTICR[0],2);
-	__clearbit(SYSCFG->EXTICR[0],3);
+	__clearbit(SYSCFG->EXTICR[0], 0);
+	__clearbit(SYSCFG->EXTICR[0], 1);
+	__clearbit(SYSCFG->EXTICR[0], 2);
+	__clearbit(SYSCFG->EXTICR[0], 3);
 		
 	// Enable Interrupt on EXTI0 line
 	__setbit(EXTI->IMR, 0);
@@ -114,6 +129,31 @@ static void configInterrupt0(void)
 
 	// enable IRQn.6 to accept interrupt
 	NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+static void configInterrupt1(void) 
+{
+	// enable clock to syscfg for pin selection.
+	__setbit(RCC->APB2ENR, 14);
+		
+	// connect PA.1 to EXTI.1
+	__clearbit(SYSCFG->EXTICR[0], 4);
+	__clearbit(SYSCFG->EXTICR[0], 5);
+	__clearbit(SYSCFG->EXTICR[0], 6);
+	__clearbit(SYSCFG->EXTICR[0], 7);
+		
+	// Enable Interrupt on EXTI1 line
+	__setbit(EXTI->IMR, 1);
+		
+	// trigger interrupt on rising edge
+	__setbit(EXTI->RTSR, 1);
+
+	// Priority can be found on datasheet
+	// interrupt vector table
+	NVIC_SetPriority(EXTI1_IRQn, 7U);
+
+	// enable IRQn.15 to accept interrupt
+	NVIC_EnableIRQ(EXTI1_IRQn);
 }
 
 
@@ -161,6 +201,22 @@ void checkTask(void *pvParams)
 		for(i; i < 100000; i++);
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 		for(i; i < 100000; i++);
+	}
+}
+
+void semTask(void *pvParams)
+{	
+	// initially take semaphore to bring binary back to 0
+	xSemaphoreTake(smphrHandle, portMAX_DELAY);
+	for(;;) 
+	{
+		// lock task here until unlocked by ISR
+		xSemaphoreTake(smphrHandle, portMAX_DELAY);
+		
+		printf("Task unlocked, free to proceed!\n");
+		
+		// turn off check-task light
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
 	}
 }
 
@@ -229,7 +285,7 @@ void EXTI0_IRQHandler(void)
 	BaseType_t xHigherPriorityTaskWoken;
 
 	// Clear the pending interrupt
-	__setbit (EXTI->PR, 0);
+	__setbit(EXTI->PR, 0);
 
 	printf("Button Pressed, Sending message to Queue!\n");
 
@@ -246,4 +302,18 @@ void EXTI0_IRQHandler(void)
 	}
 }
 
-
+// interrupt to release button lock
+void EXTI1_IRQHandler(void)
+{
+	int txStatus = 0;
+	BaseType_t xHigherPriorityTaskWoken;
+	
+	// clear pending interrupts
+	__setbit(EXTI->PR, 1);
+	
+	txStatus = xSemaphoreGiveFromISR(smphrHandle, &xHigherPriorityTaskWoken);
+	if(pdPASS == txStatus)
+	{
+		portEND_SWITCHING_ISR(xHigherPriorityTaskWoken);
+	}
+}
